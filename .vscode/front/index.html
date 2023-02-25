@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <title>Mi pagina</title>
+  </head>
+  <script>
+    function getData() {
+      var data = fetch("http://127.0.0.1:8000/persona")
+        .then((response) => response.json())
+        .then(
+          (json) =>
+            (document.getElementById("personas").innerHTML = JSON.stringify(
+              json,
+              null,
+              4
+            ))
+        );
+    }
+
+    getData();
+    function senData() {
+      var formData = new FormData(document.getElementById("formulario"));
+      document.getElementById("personas").innerHTML = formData
+      console.log(formData)
+      fetch("http://127.0.0.1:8000/insert/persona", {
+        body: JSON.stringify({
+          nombre: formData.get("nombre"),
+          edad: formData.get("edad"),
+        }),
+        headers: { "Content-type": "application/json" },
+        method: "post",
+      }).then(getData());
+      return false;
+    }
+  </script>
+  <body>
+    <h1>Registro de personas</h1>
+
+    <form id="formulario" onsubmit="return senData()">
+      <input name="nombre" placeholder="Nombre" />
+      <input name="edad" type="number" placeholder="Edad" />
+      <button type="submit">Resgistrar</button>
+    </form>
+
+    <pre id="personas"></pre>
+  </body>
+</html>
